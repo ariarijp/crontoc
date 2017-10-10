@@ -18,9 +18,11 @@ $ crontab -l
 */5 0 * * * free >> /tmp/free.log
 0 10 1 * * date >> /tmp/date.log
 $ crontoc --help
-  Usage of ./crontoc:
-    -sort
-          Sort by next execution time.
+Usage of crontoc:
+  -from string
+    	Show TOC from its time. (default "2017-10-10T21:58:34")
+  -sort
+    	Sort by next execution time.
 $ crontab -l | crontoc
 Next: 2017-09-19 23:33:00 +0900 JST # * * * * * vmstat >> /tmp/vmstat.log
 Next: 2017-09-20 00:10:00 +0900 JST # 10 0 * * * df -h >> /tmp/df.log

@@ -14,8 +14,9 @@ import (
 	"github.com/robfig/cron"
 )
 
-func parseLines(sortFlag bool) ([]string, error) {
-	now := time.Now()
+const LAYOUT = "2006-01-02T15:04:05"
+
+func parseLines(from time.Time, sortFlag bool) ([]string, error) {
 	r := regexp.MustCompile(`^[\d/\-,*]`)
 	specParser := cron.NewParser(cron.Minute | cron.Hour | cron.Dom | cron.Month | cron.Dow)
 
@@ -31,7 +32,7 @@ func parseLines(sortFlag bool) ([]string, error) {
 		if err != nil {
 			return nil, err
 		}
-		result = append(result, fmt.Sprintf("Next: %s # %s", sched.Next(now), line))
+		result = append(result, fmt.Sprintf("Next: %s # %s", sched.Next(from), line))
 	}
 	if err := scanner.Err(); err != nil {
 		return nil, err
@@ -45,10 +46,17 @@ func parseLines(sortFlag bool) ([]string, error) {
 }
 
 func main() {
+	now := time.Now()
 	sortFlag := flag.Bool("sort", false, "Sort by next execution time.")
+	fromStr := flag.String("from", now.Format(LAYOUT), "Show TOC from its time.")
 	flag.Parse()
 
-	result, err := parseLines(*sortFlag)
+	from, err := time.Parse(LAYOUT, *fromStr)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	result, err := parseLines(from, *sortFlag)
 	if err != nil {
 		log.Fatal(err)
 	}
