@@ -32,7 +32,8 @@ func parseLines(from time.Time, sortFlag bool) ([]string, error) {
 		if err != nil {
 			return nil, err
 		}
-		result = append(result, fmt.Sprintf("Next: %s # %s", sched.Next(from), line))
+		next := sched.Next(from).In(time.Local)
+		result = append(result, fmt.Sprintf("Next: %s # %s", next, line))
 	}
 	if err := scanner.Err(); err != nil {
 		return nil, err
@@ -46,7 +47,7 @@ func parseLines(from time.Time, sortFlag bool) ([]string, error) {
 }
 
 func main() {
-	now := time.Now()
+	now := time.Now().UTC()
 	sortFlag := flag.Bool("sort", false, "Sort by next execution time.")
 	fromStr := flag.String("from", now.Format(LAYOUT), "Show TOC from its time.")
 	flag.Parse()
